@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Public SMTP Tester</title>
+  <link rel="stylesheet" href="/ui/dashboard.css" />
+</head>
+<body>
+  <main class="center-wrap">
+    <section class="hero-card">
+      <p class="eyebrow">Open Tool</p>
+      <h1>Public SMTP Tester</h1>
+      <p class="muted">No login required. Enter SMTP credentials and send a test email.</p>
+
+      <form id="smtpForm" class="form-grid" style="margin-top:14px;">
+        <input id="host" placeholder="SMTP host (example: smtp.gmail.com)" required />
+        <input id="port" type="number" placeholder="SMTP port" value="587" required />
+        <input id="username" placeholder="SMTP username" required />
+        <input id="password" type="password" placeholder="SMTP password / app password" required />
+        <input id="from" placeholder="From email" required />
+        <input id="to" placeholder="To email(s), comma separated" required />
+        <input id="subject" placeholder="Subject" value="SMTP Test Message" />
+        <textarea id="body" placeholder="Email body" style="min-height:150px; grid-column:1/-1;">Hello, this is a SMTP test message.</textarea>
+        <button id="sendBtn" type="submit">Send Test Email</button>
+      </form>
+
+      <div class="inline-row" style="margin-top:12px;">
+        <a href="/ui/index.html">Back</a>
+        <span id="status" class="muted">Ready.</span>
+      </div>
+
+      <pre id="result" style="margin-top:12px;">Waiting for test...</pre>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById("smtpForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const statusEl = document.getElementById("status");
+      const resultEl = document.getElementById("result");
+      const btn = document.getElementById("sendBtn");
+      const payload = {
+        host: document.getElementById("host").value.trim(),
+        port: Number(document.getElementById("port").value),
+        username: document.getElementById("username").value.trim(),
+        password: document.getElementById("password").value,
+        from: document.getElementById("from").value.trim(),
+        to: document.getElementById("to").value.trim(),
+        subject: document.getElementById("subject").value,
+        body: document.getElementById("body").value,
+      };
+      btn.disabled = true;
+      statusEl.textContent = "Sending...";
+      resultEl.textContent = "Sending test email...";
+
+      try {
+        const res = await fetch("/api/smtp-test", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const txt = await res.text();
+        resultEl.textContent = `HTTP ${res.status}\n${txt}`;
+        statusEl.textContent = res.ok ? "Success: test email sent." : "Failed: check error response.";
+        statusEl.className = res.ok ? "result-ok" : "result-err";
+      } catch (err) {
+        resultEl.textContent = String(err);
+        statusEl.textContent = "Request failed.";
+        statusEl.className = "result-err";
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

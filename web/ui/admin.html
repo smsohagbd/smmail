@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | MailOps Pro</title>
+  <link rel="stylesheet" href="/ui/dashboard.css" />
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <p class="eyebrow">MailOps Pro</p>
+        <h2>Admin</h2>
+      </div>
+      <nav class="side-nav">
+        <button class="nav-link active" data-section="overview">Overview</button>
+        <button class="nav-link" data-section="users">Users</button>
+        <button class="nav-link" data-section="packages">Packages</button>
+        <button class="nav-link" data-section="smtp">SMTP Pool</button>
+        <button class="nav-link" data-section="logs">Logs</button>
+        <button class="nav-link" data-section="pending">Pending</button>
+      </nav>
+      <div class="side-foot">
+        <a href="/ui/user.html">User Portal</a>
+        <a href="/ui/smtp-tester.html">SMTP Tester</a>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <div class="top-left">
+          <button id="sidebarToggle" class="icon-btn">Menu</button>
+          <div>
+            <p class="eyebrow">Control Plane</p>
+            <h1>Admin Dashboard</h1>
+          </div>
+        </div>
+        <div class="inline-row top-actions">
+          <button id="refreshAll">Refresh</button>
+          <button id="logoutBtn" class="danger-btn">Logout</button>
+        </div>
+      </header>
+
+      <main class="grid-admin">
+        <section class="card wide panel-section" data-panel="overview">
+          <div id="status" class="muted">Ready</div>
+        </section>
+
+        <section class="card stats wide panel-section" id="statCards" data-panel="overview"></section>
+
+        <section class="card wide panel-section" data-panel="users">
+          <h2>Create User</h2>
+          <form id="createUserForm" class="form-grid">
+            <input name="username" placeholder="username" required />
+            <input name="password" type="password" placeholder="password" required />
+            <input name="display_name" placeholder="display name" />
+            <input name="plan_name" placeholder="plan name" value="starter" />
+            <input name="monthly_limit" type="number" placeholder="monthly limit" value="10000" />
+            <label class="check"><input name="rotation_on" type="checkbox" /> rotation enabled</label>
+            <label class="check"><input name="allow_user_smtp" type="checkbox" checked /> allow user own SMTP</label>
+            <label class="check"><input name="enabled" type="checkbox" checked /> enabled</label>
+            <button type="submit">Create User</button>
+          </form>
+        </section>
+
+        <section class="card wide panel-section" data-panel="users">
+          <div class="card-head">
+            <h2>Users & Plan Usage</h2>
+            <button id="refreshUsage">Reload</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>User</th><th>Plan</th><th>Month Sent</th><th>24h Sent</th><th>Usage</th><th>Actions</th></tr></thead>
+              <tbody id="usageRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card panel-section" data-panel="packages">
+          <h2>Package Plans</h2>
+          <form id="packageForm" class="form-grid">
+            <input name="name" placeholder="plan name" required />
+            <input name="monthly_limit" type="number" placeholder="monthly limit" value="10000" />
+            <input name="limit_per_sec" type="number" placeholder="per sec" value="5" />
+            <input name="limit_per_min" type="number" placeholder="per min" value="120" />
+            <input name="limit_per_hour" type="number" placeholder="per hour" value="3000" />
+            <input name="limit_per_day" type="number" placeholder="per day" value="20000" />
+            <input name="throttle_ms" type="number" placeholder="throttle ms" value="0" />
+            <button type="submit">Save Package</button>
+          </form>
+          <div class="inline-row" style="margin-top:8px;">
+            <input id="defaultPackageName" placeholder="default package name" />
+            <button id="setDefaultPackage">Set Default</button>
+          </div>
+        </section>
+
+        <section class="card panel-section" data-panel="packages">
+          <h2>Package List</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Monthly</th><th>Per Sec</th><th>Per Min</th><th>Per Hour</th><th>Per Day</th><th>Throttle</th><th>Default</th><th>Action</th></tr></thead>
+              <tbody id="packageRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card panel-section" data-panel="smtp">
+          <h2>Create Admin SMTP</h2>
+          <form id="adminSMTPForm" class="form-grid">
+            <input name="name" placeholder="smtp alias" required />
+            <input name="host" placeholder="smtp host" required />
+            <input name="port" type="number" placeholder="port" value="587" />
+            <input name="username" placeholder="smtp username" required />
+            <input name="password" type="password" placeholder="smtp password" required />
+            <input name="from_email" placeholder="from email" required />
+            <label class="check"><input name="enabled" type="checkbox" checked /> enabled</label>
+            <button type="submit">Add SMTP</button>
+          </form>
+        </section>
+
+        <section class="card panel-section" data-panel="smtp">
+          <h2>Assign SMTP to User</h2>
+          <form id="assignSMTPForm" class="form-grid">
+            <input name="user_id" type="number" placeholder="user id" required />
+            <input name="smtp_id" type="number" placeholder="smtp id" required />
+            <input name="weight" type="number" placeholder="weight" value="1" />
+            <label class="check"><input name="enabled" type="checkbox" checked /> enabled</label>
+            <button type="submit">Assign</button>
+          </form>
+          <div class="inline-row" style="margin-top:8px;">
+            <input id="assignedUserId" type="number" placeholder="user id for assigned list" />
+            <button id="loadAssignedBtn">Load Assigned SMTPs</button>
+          </div>
+        </section>
+
+        <section class="card wide panel-section" data-panel="smtp">
+          <h2>SMTP Accounts</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>ID</th><th>Name</th><th>Host</th><th>Port</th><th>User</th><th>From</th><th>Enabled</th><th>Action</th></tr></thead>
+              <tbody id="adminSMTPRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card wide panel-section" data-panel="smtp">
+          <h2>Assigned SMTPs</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>ID</th><th>Name</th><th>Host</th><th>Port</th><th>User</th><th>From</th><th>Action</th></tr></thead>
+              <tbody id="assignedSMTPRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card wide panel-section" data-panel="logs">
+          <div class="card-head">
+            <h2>Sending Logs</h2>
+            <div class="inline-row">
+              <input id="eventsUserId" type="number" placeholder="filter user id" />
+              <button id="refreshEvents">Refresh Logs</button>
+            </div>
+          </div>
+          <div class="inline-row" style="margin-bottom:10px;">
+            <select id="logDeleteMode">
+              <option value="all">Delete All</option>
+              <option value="last_7_days">Delete Last 7 Days</option>
+              <option value="last_15_days">Delete Last 15 Days</option>
+              <option value="custom">Delete Custom Range</option>
+            </select>
+            <input id="logFromDate" type="date" />
+            <input id="logToDate" type="date" />
+            <button id="deleteLogsBtn" class="danger-btn">Delete Logs</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Time</th><th>UserID</th><th>From</th><th>To</th><th>Status</th><th>Reason</th></tr></thead>
+              <tbody id="eventRows"></tbody>
+            </table>
+          </div>
+          <div class="pager">
+            <button id="eventsPrev">Prev</button>
+            <span id="eventsPageInfo" class="muted">Page 1</span>
+            <button id="eventsNext">Next</button>
+          </div>
+        </section>
+
+        <section class="card wide panel-section" data-panel="pending">
+          <div class="card-head">
+            <h2>Pending Queue</h2>
+            <div class="inline-row">
+              <input id="pendingUserId" type="number" placeholder="filter user id" />
+              <button id="refreshPending">Refresh Pending</button>
+            </div>
+          </div>
+          <div class="inline-row" style="margin-bottom:10px;">
+            <select id="pendingDeleteMode">
+              <option value="all">Delete All</option>
+              <option value="last_7_days">Delete Last 7 Days</option>
+              <option value="last_15_days">Delete Last 15 Days</option>
+              <option value="custom">Delete Custom Range</option>
+            </select>
+            <input id="pendingFromDate" type="date" />
+            <input id="pendingToDate" type="date" />
+            <button id="deletePendingBtn" class="danger-btn">Delete Pending</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Time</th><th>UserID</th><th>From</th><th>To</th><th>Attempts</th><th>Next Attempt</th><th>Last Error</th></tr></thead>
+              <tbody id="pendingRows"></tbody>
+            </table>
+          </div>
+          <div class="pager">
+            <button id="pendingPrev">Prev</button>
+            <span id="pendingPageInfo" class="muted">Page 1</span>
+            <button id="pendingNext">Next</button>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="/ui/admin.js"></script>
+
+  <div id="smtpTestModal" class="modal-backdrop hidden">
+    <section class="modal-card">
+      <div class="modal-head">
+        <h3 id="smtpTestTitle">SMTP Test</h3>
+        <button id="smtpTestClose" class="danger-btn" type="button">Close</button>
+      </div>
+      <form id="smtpTestForm" class="form-grid">
+        <input id="smtpTestTo" placeholder="Recipient email(s), comma separated" required />
+        <input id="smtpTestSubject" placeholder="Subject" value="SMTP Account Test" />
+        <textarea id="smtpTestBody" style="min-height:120px; grid-column:1/-1;">This is a test email from dashboard.</textarea>
+        <button id="smtpTestSendBtn" type="submit">Send Test</button>
+      </form>
+      <div id="smtpTestResult" class="muted" style="margin-top:8px;">Ready.</div>
+    </section>
+  </div>
+</body>
+</html>

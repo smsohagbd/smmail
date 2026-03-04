@@ -1,0 +1,96 @@
+:root {
+  --bg-0: #0d1b1e;
+  --bg-1: #112f2f;
+  --panel: #f8f3e8;
+  --ink: #102328;
+  --accent: #f08c2a;
+  --accent-2: #2a9d8f;
+  --danger: #cf3e3e;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(130deg, var(--bg-0), var(--bg-1));
+}
+
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
+}
+
+.layout {
+  width: min(1200px, 94vw);
+  margin: 24px auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.panel {
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.hero h1 { margin: 0 0 8px; }
+.hero p { margin: 0 0 12px; }
+
+.token-row { display: flex; gap: 8px; }
+.token-row input { flex: 1; }
+
+input, button {
+  border: 1px solid #c8bca8;
+  border-radius: 8px;
+  padding: 10px;
+  background: #fff;
+}
+button {
+  cursor: pointer;
+  color: #fff;
+  border: none;
+  background: linear-gradient(120deg, var(--accent), #e76f51);
+}
+button:hover { filter: brightness(0.95); }
+
+.grid-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+}
+.chk { display: flex; align-items: center; gap: 6px; }
+.list {
+  max-height: 280px;
+  overflow: auto;
+  border: 1px solid #d8ccb8;
+  border-radius: 8px;
+  padding: 8px;
+  background: #fff;
+}
+.user-item {
+  padding: 8px;
+  border-bottom: 1px dashed #ded6c8;
+  font-size: 14px;
+}
+.user-item:last-child { border-bottom: 0; }
+.status-on { color: var(--accent-2); font-weight: 700; }
+.status-off { color: var(--danger); font-weight: 700; }
+
+.toolbar { display: flex; gap: 8px; margin-bottom: 8px; }
+pre {
+  margin: 0;
+  max-height: 300px;
+  overflow: auto;
+  background: #0f2023;
+  color: #d8f0ea;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 12px;
+}

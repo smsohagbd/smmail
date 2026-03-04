@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MailOps Login</title>
+  <link rel="stylesheet" href="/ui/dashboard.css" />
+</head>
+<body>
+  <main class="center-wrap">
+    <section class="hero-card" style="max-width:720px;">
+      <p class="eyebrow">MailOps Pro</p>
+      <h1>Single Login</h1>
+      <p>Login once. Admin users go to Admin Dashboard, normal users go to User Portal.</p>
+
+      <form id="loginForm" class="form-grid" style="margin-top:12px;">
+        <input id="username" placeholder="username" required />
+        <input id="password" type="password" placeholder="password" required />
+        <button type="submit">Sign In</button>
+      </form>
+      <div id="loginStatus" class="muted" style="margin-top:8px;">Not logged in</div>
+
+      <hr style="margin:14px 0; border-color:#2a4668;" />
+      <h3 style="margin:0 0 8px;">New user registration</h3>
+      <form id="registerForm" class="form-grid">
+        <input id="regUsername" placeholder="new username" required />
+        <input id="regPassword" type="password" placeholder="new password" required />
+        <input id="regDisplayName" placeholder="display name" />
+        <button type="submit">Register</button>
+      </form>
+      <div id="registerStatus" class="muted" style="margin-top:8px;"></div>
+    </section>
+  </main>
+  <script src="/ui/login.js"></script>
+</body>
+</html>

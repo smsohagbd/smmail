@@ -1,0 +1,11 @@
+{
+  "smtp_host": "127.0.0.1",
+  "smtp_port": 2525,
+  "smtp_username": "sm",
+  "smtp_password": "sohag999",
+  "from": "demo@local.test",
+  "to": "receiver@local.test",
+  "subject": "Local SMTP Test",
+  "body": "Hello from local SMTP test script.",
+  "use_ssl": false
+}

@@ -1,0 +1,2 @@
+-- Baseline schema is applied by internal/db/db.go at startup.
+-- This file exists as a migration placeholder for future versioned migrations.
